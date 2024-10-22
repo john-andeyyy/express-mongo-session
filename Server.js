@@ -10,7 +10,11 @@ const PORT = process.env.PORT || 3000;
 const profileRoutes = require('./routes/profileRoutes');
 
 // Middleware
-app.use(cors()); // Enable CORS for all requests
+app.use(cors({
+    origin: true, // Reflects the request origin
+    credentials: true, // Allows sending cookies
+}));
+
 app.use(express.json());
 
 // Session Configuration
@@ -25,9 +29,12 @@ app.use(
         }),
         cookie: {
             maxAge: 1000 * 60 * 60 * 24, // 1 day
+            sameSite: 'none', // or 'lax' depending on your setup
+            secure: true, // true if using HTTPS
         },
     })
 );
+
 
 // Database Connection
 mongoose
