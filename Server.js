@@ -10,10 +10,27 @@ const PORT = process.env.PORT || 3000;
 const profileRoutes = require('./routes/profileRoutes');
 
 // Middleware
+const allowedOrigins = [
+    'http://localhost:3000', 
+    'http://127.0.0.1:5501',
+    'https://your-frontend-domain2.com', 
+    // Add more as needed
+];
+
 app.use(cors({
-    origin: true, // Reflects the request origin
-    credentials: true, // Allows sending cookies
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, origin);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Allow cookies to be sent
+    optionsSuccessStatus: 200
 }));
+
 
 app.use(express.json());
 
@@ -29,8 +46,9 @@ app.use(
         }),
         cookie: {
             maxAge: 1000 * 60 * 60 * 24, // 1 day
-            sameSite: 'none', // or 'lax' depending on your setup
+            httpOnly: true,
             secure: true, // true if using HTTPS
+            sameSite: 'None', // Allow cross-origin cookies
         },
     })
 );
