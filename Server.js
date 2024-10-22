@@ -3,12 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const cors = require('cors'); // Import cors
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const profileRoutes = require('./routes/profileRoutes');
 
 // Middleware
+app.use(cors()); // Enable CORS for all requests
 app.use(express.json());
 
 // Session Configuration
